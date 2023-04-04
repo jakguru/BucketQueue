@@ -1,6 +1,107 @@
 import { EventEmitter } from 'events'
 
 /**
+ * Represents an object of event handlers used by the BucketQueue class.
+ * @typeparam T The type of items being handled by the event handlers.
+ */
+export type BucketQueueEventHandlers<T = any> = {
+  /**
+   * Handles the "tick" event, which is triggered on each interval if the bucket queue is not empty.
+   * @param timestamp The timestamp when the event was triggered.
+   * @param pressure The number of items currently in the bucket queue.
+   */
+  tick: (timestamp: number, pressure: number) => void
+  /**
+   * Handles the "spill" event, which is triggered when the bucket queue reaches its maximum batch size and spills.
+   * @param timestamp The timestamp when the event was triggered.
+   * @param pressure The number of items currently in the bucket queue.
+   */
+  spill: (timestamp: number, pressure: number) => void
+  /**
+   * Handles the "spilled" event, which is triggered when the bucket queue has spilled and reduced its pressure.
+   * @param timestamp The timestamp when the event was triggered.
+   * @param pressure The number of items currently in the bucket queue.
+   * @param prevPressure The number of items in the bucket queue before it spilled.
+   */
+  spilled: (timestamp: number, pressure: number, prevPressure: number) => void
+  /**
+   * Handles the "drain" event, which is triggered when the bucket queue becomes empty.
+   */
+  drain: () => void
+  /**
+   * Handles the "finish" event, which is triggered when the bucket queue becomes empty and no more items are expected to be added.
+   */
+  finish: () => void
+  /**
+   * Handles the "error" event, which is triggered when an error occurs while processing items in the bucket queue.
+   * @param error The error object that was thrown.
+   * @param itemOrItems The item or items that caused the error.
+   */
+  error: (error: Error | null | undefined, itemOrItems?: T | T[]) => void
+  /**
+   * Handles the "pipe" event, which is triggered when items are added to the bucket queue.
+   * @param items An array of items that were added to the bucket queue.
+   */
+  pipe: (items: T[]) => void
+  /**
+   * Handles the "unpipe" event, which is triggered when items are removed from the bucket queue.
+   * @param items An array of items that were removed from the bucket queue.
+   */
+  unpipe: (items: T[]) => void
+  /**
+   * Handles the "corked" event, which is triggered when the bucket queue is corked.
+   */
+  corked: () => void
+  /**
+   * Handles the "uncorked" event, which is triggered when the bucket queue is uncorked.
+   */
+  uncorked: () => void
+}
+
+/**
+ * An interface that defines the methods for an event emitter for the `BucketQueue` class.
+ *
+ * @template T The type of the items in the `BucketQueue`.
+ */
+export interface BucketQueueEmitter<T = any> {
+  /**
+   * Adds a listener function to the specified event.
+   *
+   * @param eventName The name of the event to add a listener for.
+   * @param listener The function to be called when the event is emitted.
+   * @returns void
+   */
+  on<K extends keyof BucketQueueEventHandlers<T>>(
+    eventName: K,
+    listener: BucketQueueEventHandlers<T>[K]
+  ): void
+
+  /**
+   * Removes a listener function from the specified event.
+   *
+   * @param eventName The name of the event to remove the listener from.
+   * @param listener The function to be removed from the listeners of the event.
+   * @returns void
+   */
+  off<K extends keyof BucketQueueEventHandlers<T>>(
+    eventName: K,
+    listener: BucketQueueEventHandlers<T>[K]
+  ): void
+
+  /**
+   * Calls each of the listeners registered for the specified event.
+   *
+   * @param eventName The name of the event to emit.
+   * @param args The arguments to be passed to the event listeners.
+   * @returns void
+   */
+  emit<K extends keyof BucketQueueEventHandlers<T>>(
+    eventName: K,
+    ...args: Parameters<BucketQueueEventHandlers<T>[K]>
+  ): void
+}
+
+/**
  * Defines a callback function for handling spilled items in the queue.
  * @typeparam T Type of items in the queue.
  * @param items An array of items that spilled.
@@ -88,7 +189,7 @@ const BucketQueueDefaultOptions: Pick<
  * @typeparam T Type of items in the queue.
  * @extends EventEmitter
  */
-export default class BucketQueue<T = any> extends EventEmitter {
+export default class BucketQueue<T = any> extends EventEmitter implements BucketQueueEmitter<T> {
   /**
    * A map containing stored events.
    */

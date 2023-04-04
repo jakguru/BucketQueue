@@ -49,6 +49,8 @@ queue.push('item 3');
 
 ## API
 
+For full API documentation, see [TypeDoc Documentation](https://jakguru.github.io/BucketQueue/)
+
 The following properties, methods and events are available:
 
 ### `options: BucketQueueOptions`
