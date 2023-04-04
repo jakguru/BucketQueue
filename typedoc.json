@@ -1,0 +1,11 @@
+{
+    "entryPoints": ["src/bucketqueue.ts"],
+    "out": "docs",
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "excludeInternal": true,
+    "name": "bucketqueue",
+    "readme": "README.md",
+    "theme": "default"
+}
