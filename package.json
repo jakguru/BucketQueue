@@ -1,5 +1,5 @@
 {
-  "name": "bucketqueue",
+  "name": "@jakguru/bucketqueue",
   "version": "1.0.0",
   "description": "A simple in-memory queue that batches items together and releases them periodically. Useful for enforcing rate limits with APIs.",
   "main": "dist/bucketqueue.js",

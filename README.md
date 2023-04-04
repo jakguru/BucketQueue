@@ -5,7 +5,7 @@ A simple queue that batches items together and releases them periodically. Usefu
 To install the library using npm, run:
 
 ```bash
-npm install bucketqueue
+npm install @jakguru/bucketqueue
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ The library can be used with both TypeScript and CommonJS. Here are some example
 
 ### Typescript
 ```typescript
-import BucketQueue from 'bucketqueue';
+import BucketQueue from '@jakguru/bucketqueue';
 
 const queue = new BucketQueue<string>({
   interval: 1000,
@@ -31,7 +31,7 @@ queue.push('item 3');
 
 ### Javascript
 ```javascript
-const BucketQueue = require('bucketqueue').default;
+const BucketQueue = require('@jakguru/bucketqueue').default;
 
 const queue = new BucketQueue({
   interval: 1000,
