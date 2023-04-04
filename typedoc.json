@@ -1,5 +1,5 @@
 {
-    "entryPoints": ["src/bucketqueue.ts"],
+    "entryPoints": ["bucketqueue.ts"],
     "out": "docs",
     "excludeExternals": true,
     "excludePrivate": true,
